@@ -1,0 +1,346 @@
+.music-page {
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: clamp(22px, 4vw, 42px);
+  overflow: auto;
+  background:
+    radial-gradient(ellipse at 86% 0%, rgba(84, 69, 173, 0.13), transparent 40%),
+    rgba(12, 13, 31, 0.18);
+}
+
+.music-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(201, 198, 234, 0.12);
+}
+
+.music-eyebrow {
+  margin: 0 0 8px;
+  color: #80dbe5;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.music-heading h1 {
+  margin: 0;
+  color: #f7f5ff;
+  font-size: clamp(24px, 4vw, 34px);
+  letter-spacing: -0.045em;
+}
+
+.music-description {
+  margin: 8px 0 0;
+  color: #aaa8c4;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.spotify-mark {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border: 1px solid rgba(30, 215, 96, 0.35);
+  border-radius: 999px;
+  color: #1ed760;
+  background: rgba(30, 215, 96, 0.08);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.music-setup,
+.music-connect {
+  width: min(100%, 560px);
+  margin: auto;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid rgba(201, 198, 234, 0.13);
+  border-radius: 18px;
+  background: rgba(31, 30, 58, 0.65);
+}
+
+.music-setup h2,
+.music-connect h2 {
+  margin: 0 0 10px;
+  color: #f7f5ff;
+  font-size: 21px;
+  letter-spacing: -0.025em;
+}
+
+.music-setup p,
+.music-connect p {
+  margin: 8px 0 0;
+  color: #aaa8c4;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.music-setup pre,
+.music-redirect {
+  display: block;
+  width: 100%;
+  margin: 12px 0 18px;
+  padding: 12px 14px;
+  overflow-wrap: anywhere;
+  border: 1px solid rgba(201, 198, 234, 0.13);
+  border-radius: 9px;
+  color: #d3cbff;
+  background: rgba(12, 13, 31, 0.68);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+.music-note {
+  margin-top: 20px !important;
+  color: #85849e !important;
+  font-size: 11px !important;
+}
+
+.music-connect {
+  text-align: center;
+}
+
+.music-record {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  place-items: center;
+  border: 1px solid rgba(30, 215, 96, 0.38);
+  border-radius: 50%;
+  color: #1ed760;
+  background:
+    radial-gradient(circle, #13152b 0 20%, transparent 21%),
+    repeating-radial-gradient(circle, #242541 0 6px, #15162e 7px 12px);
+  box-shadow: 0 0 42px rgba(30, 215, 96, 0.1);
+  font-size: 24px;
+}
+
+.spotify-button {
+  min-height: 46px;
+  margin-top: 22px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  color: #0e1711;
+  background: #1ed760;
+  cursor: pointer;
+  font-weight: 750;
+  transition: filter 150ms ease, transform 150ms ease;
+}
+
+.spotify-button:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.spotify-button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.music-connected-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 20px 0 26px;
+}
+
+.music-connected-row p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #c3c1d9;
+  font-size: 13px;
+}
+
+.music-online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1ed760;
+  box-shadow: 0 0 12px rgba(30, 215, 96, 0.5);
+}
+
+.music-disconnect {
+  padding: 7px 10px;
+  border: 1px solid rgba(201, 198, 234, 0.2);
+  border-radius: 8px;
+  color: #aaa8c4;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.music-disconnect:hover {
+  border-color: #a792ff;
+  color: #f7f5ff;
+}
+
+.music-search {
+  display: grid;
+  gap: 10px;
+}
+
+.music-search label {
+  color: #c3c1d9;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.music-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px;
+  gap: 10px;
+}
+
+.music-search input {
+  min-width: 0;
+  min-height: 46px;
+  padding: 11px 14px;
+  border: 1px solid rgba(201, 198, 234, 0.17);
+  border-radius: 9px;
+  outline: none;
+  color: #f7f5ff;
+  background: rgba(12, 13, 31, 0.64);
+}
+
+.music-search input::placeholder {
+  color: #85849e;
+}
+
+.music-search input:focus {
+  border-color: #a792ff;
+  box-shadow: 0 0 0 3px rgba(167, 146, 255, 0.13);
+}
+
+.music-search-row button,
+.music-play-button {
+  min-height: 44px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 9px;
+  color: #17162f;
+  background: linear-gradient(100deg, #b2a1ff, #80dbe5);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.music-search-row button:disabled,
+.music-play-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.music-results {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.music-track {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid rgba(201, 198, 234, 0.1);
+  border-radius: 12px;
+  background: rgba(31, 30, 58, 0.52);
+}
+
+.music-track > img,
+.music-track-placeholder {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 7px;
+  color: #b7a8ff;
+  background: #252444;
+  object-fit: cover;
+}
+
+.music-track-info {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.music-track-info strong,
+.music-track-info span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.music-track-info strong {
+  color: #f7f5ff;
+  font-size: 13px;
+}
+
+.music-track-info span,
+.music-track-info a {
+  color: #aaa8c4;
+  font-size: 11px;
+}
+
+.music-track-info a {
+  width: fit-content;
+  color: #80dbe5;
+  text-decoration: none;
+}
+
+.music-track-info a:hover {
+  text-decoration: underline;
+}
+
+.music-play-button {
+  min-width: 66px;
+}
+
+.music-error,
+.music-search-message {
+  margin: 12px 0 0;
+  color: #ff9aab;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.music-player-status {
+  margin: 16px 0 0;
+  color: #aaa8c4;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 680px) {
+  .music-page {
+    padding: 20px 16px;
+  }
+
+  .music-heading {
+    padding-bottom: 18px;
+  }
+
+  .music-track {
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    gap: 9px;
+    padding: 8px;
+  }
+
+  .music-track > img,
+  .music-track-placeholder {
+    width: 42px;
+    height: 42px;
+  }
+}

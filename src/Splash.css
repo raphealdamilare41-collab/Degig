@@ -1,0 +1,136 @@
+.splash {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: 100svh;
+  overflow: hidden;
+  place-items: center;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  color: #f7f5ff;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(84, 69, 173, 0.24), transparent 42%),
+    linear-gradient(145deg, #101126 0%, #17162f 54%, #10172a 100%);
+  text-align: center;
+}
+
+.splash-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: splash-appear 700ms ease-out both;
+}
+
+.splash-logo {
+  display: block;
+  width: min(310px, 76vw);
+  height: auto;
+  filter: drop-shadow(0 16px 42px rgba(90, 92, 255, 0.18));
+}
+
+.splash-tagline {
+  margin: 20px 0 0;
+  color: #c3c1d9;
+  font-size: clamp(16px, 2.4vw, 19px);
+  letter-spacing: 0.04em;
+}
+
+.splash-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 64px;
+}
+
+.splash-loading-bar {
+  position: relative;
+  display: block;
+  width: 116px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.splash-loading-bar::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #a792ff, #76d9e7);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: splash-progress 6s linear forwards;
+}
+
+.splash-loading-label,
+.splash-footer {
+  color: #85849e;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.splash-footer {
+  position: absolute;
+  bottom: max(28px, env(safe-area-inset-bottom));
+  left: 24px;
+  right: 24px;
+}
+
+.splash-orb {
+  position: absolute;
+  z-index: -1;
+  width: 340px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(176, 165, 255, 0.08);
+  border-radius: 50%;
+}
+
+.splash-orb::after {
+  position: absolute;
+  inset: 24px;
+  border: 1px solid rgba(176, 165, 255, 0.05);
+  border-radius: 50%;
+  content: '';
+}
+
+.splash-orb-one {
+  top: -190px;
+  right: -120px;
+}
+
+.splash-orb-two {
+  bottom: -240px;
+  left: -150px;
+  width: 460px;
+}
+
+@keyframes splash-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes splash-appear {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

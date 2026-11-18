@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 150" role="img" aria-labelledby="title">
+  <title id="title">Degig</title>
+  <defs>
+    <linearGradient id="mark" x1="20" y1="18" x2="118" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A995FF"/>
+      <stop offset="1" stop-color="#69DCE8"/>
+    </linearGradient>
+    <linearGradient id="word" x1="148" y1="50" x2="402" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF"/>
+      <stop offset="1" stop-color="#C9C6EA"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="12" width="126" height="126" rx="38" fill="#252444"/>
+  <path d="M75 34H58v17h17a25 25 0 1 1-25 25V59L32 78v-2a43 43 0 1 0 43-42Z" fill="url(#mark)"/>
+  <circle cx="75" cy="76" r="8" fill="#252444"/>
+  <text x="155" y="103" fill="url(#word)" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="66" font-weight="700" letter-spacing="-3">Degig</text>
+</svg>
