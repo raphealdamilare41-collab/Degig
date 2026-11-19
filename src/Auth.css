@@ -3,9 +3,10 @@
   isolation: isolate;
   display: grid;
   min-height: 100svh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   place-items: center;
-  padding: 32px 20px;
+  padding: max(20px, env(safe-area-inset-top, 0px)) 16px max(20px, env(safe-area-inset-bottom, 0px));
   color: #f7f5ff;
   background:
     radial-gradient(ellipse at 50% 42%, rgba(84, 69, 173, 0.24), transparent 42%),
@@ -47,6 +48,7 @@
 
 .auth-fields {
   display: grid;
+  min-width: 0;
   gap: 14px;
 }
 
@@ -78,6 +80,33 @@
   color: #85849e;
   font-size: 12px;
   line-height: 1.5;
+}
+
+.auth-success {
+  margin: 0;
+  color: #80dbe5;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.auth-reset {
+  justify-self: end;
+  padding: 0;
+  border: 0;
+  color: #b7a8ff;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.auth-reset:hover:not(:disabled) {
+  color: #d3cbff;
+  text-decoration: underline;
+}
+
+.auth-reset:disabled {
+  cursor: progress;
+  opacity: 0.7;
 }
 
 .auth-input:focus {
@@ -123,6 +152,11 @@
 .auth-button:hover {
   filter: brightness(1.06);
   transform: translateY(-1px);
+}
+
+.auth-button:disabled {
+  cursor: progress;
+  opacity: 0.72;
 }
 
 .auth-button:focus-visible,
@@ -181,6 +215,20 @@
 
 @media (max-width: 420px) {
   .auth-card {
-    padding: 26px 22px;
+    padding: 24px 20px;
+  }
+
+  .auth-logo {
+    width: min(140px, 42vw);
+    margin-bottom: 20px;
+  }
+
+  .auth-title {
+    font-size: clamp(24px, 7vw, 30px);
+  }
+
+  .auth-subtitle {
+    margin-bottom: 22px;
+    line-height: 1.5;
   }
 }

@@ -1,0 +1,182 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validProfile(data, uid) {
+      return data.keys().hasAll(['uid', 'handle', 'handleKey', 'name', 'image', 'createdAt'])
+        && data.keys().hasOnly(['uid', 'handle', 'handleKey', 'name', 'image', 'createdAt', 'updatedAt'])
+        && data.uid == uid
+        && data.handle is string
+        && data.handleKey is string
+        && data.handleKey.matches('^[a-z0-9_]{3,20}$')
+        && data.handle == '@' + data.handleKey
+        && data.name is string
+        && data.name.size() > 0
+        && data.name.size() <= 60
+        && data.image is string
+        && data.image.size() <= 450000;
+    }
+
+    match /handles/{handleKey} {
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'handleKey'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.handleKey == handleKey
+        && getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.handleKey == handleKey;
+      allow update, delete: if false;
+    }
+
+    match /messages/{messageId} {
+      function validParticipants() {
+        return request.resource.data.participants is list
+          && request.resource.data.participants.size() == 2
+          && request.resource.data.participants[0] < request.resource.data.participants[1]
+          && request.resource.data.conversationId
+            == request.resource.data.participants[0] + '_' + request.resource.data.participants[1]
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.recipientId is string
+          && request.resource.data.senderId != request.resource.data.recipientId
+          && request.resource.data.participants.hasAll([
+            request.resource.data.senderId,
+            request.resource.data.recipientId
+          ])
+          && exists(/databases/$(database)/documents/users/$(request.resource.data.senderId))
+          && exists(/databases/$(database)/documents/users/$(request.resource.data.recipientId))
+          && request.resource.data.senderHandle
+            == get(/databases/$(database)/documents/users/$(request.resource.data.senderId)).data.handle
+          && request.resource.data.recipientHandle
+            == get(/databases/$(database)/documents/users/$(request.resource.data.recipientId)).data.handle;
+      }
+
+      function validMessageBase() {
+        return request.resource.data.keys().hasAll([
+            'conversationId',
+            'participants',
+            'senderId',
+            'recipientId',
+            'senderHandle',
+            'recipientHandle',
+            'messageType',
+            'status',
+            'createdAt'
+          ])
+          && request.resource.data.keys().hasOnly([
+            'conversationId',
+            'participants',
+            'senderId',
+            'recipientId',
+            'senderHandle',
+            'recipientHandle',
+            'messageType',
+            'status',
+            'text',
+            'mediaPath',
+            'mediaName',
+            'mediaSize',
+            'mediaContentType',
+            'mediaUrl',
+            'createdAt'
+          ])
+          && request.resource.data.createdAt == request.time
+          && validParticipants();
+      }
+
+      function validTextMessage() {
+        return request.resource.data.messageType == 'text'
+          && request.resource.data.status == 'sent'
+          && request.resource.data.keys().hasAll(['text'])
+          && !request.resource.data.keys().hasAny([
+            'mediaPath',
+            'mediaName',
+            'mediaSize',
+            'mediaContentType',
+            'mediaUrl'
+          ])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 10000;
+      }
+
+      function validMediaMessage() {
+        return request.resource.data.messageType in ['image', 'video', 'audio']
+          && request.resource.data.status == 'uploading'
+          && !request.resource.data.keys().hasAny(['mediaUrl'])
+          && request.resource.data.keys().hasAll([
+            'mediaPath',
+            'mediaName',
+            'mediaSize',
+            'mediaContentType'
+          ])
+          && request.resource.data.mediaPath
+            == 'chat-media/' + request.resource.data.senderId + '/'
+              + request.resource.data.conversationId + '/' + messageId
+          && request.resource.data.mediaName is string
+          && request.resource.data.mediaName.size() > 0
+          && request.resource.data.mediaName.size() <= 255
+          && request.resource.data.mediaSize is int
+          && request.resource.data.mediaContentType is string
+          && (
+            (request.resource.data.messageType == 'image'
+              && request.resource.data.mediaContentType.matches('^image/.*$')
+              && request.resource.data.mediaSize > 0
+              && request.resource.data.mediaSize <= 10485760)
+            || (request.resource.data.messageType == 'video'
+              && request.resource.data.mediaContentType.matches('^video/.*$')
+              && request.resource.data.mediaSize > 0
+              && request.resource.data.mediaSize <= 10485760)
+            || (request.resource.data.messageType == 'audio'
+              && request.resource.data.mediaContentType.matches('^audio/.*$')
+              && request.resource.data.mediaSize > 0
+              && request.resource.data.mediaSize <= 1048576)
+          )
+          && (!request.resource.data.keys().hasAny(['text'])
+            || (request.resource.data.text is string
+              && request.resource.data.text.size() <= 10000));
+      }
+
+      allow get, list: if signedIn()
+        && resource.data.participants.hasAny([request.auth.uid]);
+      allow create: if signedIn()
+        && validMessageBase()
+        && (validTextMessage() || validMediaMessage());
+      allow update: if signedIn()
+        && resource.data.senderId == request.auth.uid
+        && resource.data.status == 'uploading'
+        && request.resource.data.status == 'sent'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'mediaUrl'])
+        && request.resource.data.mediaPath == resource.data.mediaPath
+        && request.resource.data.mediaUrl is string
+        && request.resource.data.mediaUrl.size() <= 2048;
+      allow delete: if signedIn()
+        && resource.data.senderId == request.auth.uid
+        && resource.data.status == 'uploading';
+    }
+
+    match /users/{uid} {
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn()
+        && uid == request.auth.uid
+        && validProfile(request.resource.data, uid)
+        && getAfter(/databases/$(database)/documents/handles/$(request.resource.data.handleKey)).data.uid == uid;
+      allow update: if signedIn()
+        && uid == request.auth.uid
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.handle == resource.data.handle
+        && request.resource.data.handleKey == resource.data.handleKey
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'image', 'updatedAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60
+        && request.resource.data.image is string
+        && request.resource.data.image.size() <= 450000;
+      allow delete: if false;
+    }
+  }
+}

@@ -18,13 +18,29 @@
 html,
 body,
 #root {
-  min-width: 320px;
+  width: 100%;
+  min-width: 0;
   min-height: 100%;
   margin: 0;
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+.route-loading {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: 24px;
+  color: #c3c1d9;
+  background: #101126;
+  text-align: center;
 }
 
 button,

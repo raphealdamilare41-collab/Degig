@@ -344,3 +344,35 @@
     height: 42px;
   }
 }
+
+@media (max-width: 430px) {
+  .music-heading {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .music-track {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .music-track > img,
+  .music-track-placeholder {
+    width: 38px;
+    height: 38px;
+  }
+
+  .music-play-button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .music-connected-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .music-search-row {
+    grid-template-columns: minmax(0, 1fr) 78px;
+    gap: 7px;
+  }
+}

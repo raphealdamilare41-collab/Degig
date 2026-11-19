@@ -1,0 +1,60 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /chat-media/{senderId}/{conversationId}/{messageId} {
+      function messagePath() {
+        return /databases/(default)/documents/messages/$(messageId);
+      }
+
+      function messageExists() {
+        return firestore.exists(messagePath());
+      }
+
+      function messageData() {
+        return firestore.get(messagePath()).data;
+      }
+
+      allow read: if request.auth != null
+        && messageExists()
+        && messageData().senderId == senderId
+        && messageData().conversationId == conversationId
+        && messageData().mediaPath
+          == 'chat-media/' + senderId + '/' + conversationId + '/' + messageId
+        && (
+          (messageData().status == 'sent'
+            && messageData().participants.hasAny([request.auth.uid]))
+          || (messageData().status == 'uploading'
+            && messageData().senderId == request.auth.uid)
+        );
+
+      allow create: if request.auth != null
+        && request.auth.uid == senderId
+        && messageExists()
+        && messageData().senderId == senderId
+        && messageData().conversationId == conversationId
+        && messageData().status == 'uploading'
+        && messageData().mediaPath
+          == 'chat-media/' + senderId + '/' + conversationId + '/' + messageId
+        && request.resource.size > 0
+        && request.resource.size == messageData().mediaSize
+        && request.resource.size <= (messageData().messageType == 'audio' ? 1048576 : 10485760)
+        && request.resource.contentType == messageData().mediaContentType
+        && (
+          (messageData().messageType == 'image'
+            && request.resource.contentType.matches('^image/.*$'))
+          || (messageData().messageType == 'video'
+            && request.resource.contentType.matches('^video/.*$'))
+          || (messageData().messageType == 'audio'
+            && request.resource.contentType.matches('^audio/.*$'))
+        );
+
+      allow update: if false;
+      allow delete: if request.auth != null
+        && request.auth.uid == senderId
+        && messageExists()
+        && messageData().senderId == senderId
+        && messageData().status == 'uploading';
+    }
+  }
+}

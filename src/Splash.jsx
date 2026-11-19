@@ -5,7 +5,7 @@ function Splash() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       window.location.replace('/signup')
-    }, 5000)
+    }, 6000)
 
     return () => window.clearTimeout(timer)
   }, [])
