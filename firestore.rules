@@ -158,6 +158,18 @@ service cloud.firestore {
         && resource.data.status == 'uploading';
     }
 
+    match /conversations/{conversationId} {
+      allow get, list: if signedIn()
+        && resource.data.participants.hasAny([request.auth.uid]);
+      allow update: if signedIn()
+        && resource.data.participants.hasAny([request.auth.uid])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['unreadCounts'])
+        && request.resource.data.unreadCounts.diff(resource.data.unreadCounts)
+          .affectedKeys().hasOnly([request.auth.uid])
+        && request.resource.data.unreadCounts[request.auth.uid] == 0;
+      allow create, delete: if false;
+    }
+
     match /users/{uid} {
       allow get: if signedIn();
       allow list: if false;
@@ -177,6 +189,19 @@ service cloud.firestore {
         && request.resource.data.image is string
         && request.resource.data.image.size() <= 450000;
       allow delete: if false;
+
+      match /deviceTokens/{tokenId} {
+        allow read, list: if false;
+        allow create, update: if signedIn()
+          && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['token', 'updatedAt'])
+          && request.resource.data.keys().hasAll(['token', 'updatedAt'])
+          && request.resource.data.token is string
+          && request.resource.data.token.size() > 0
+          && request.resource.data.token.size() <= 4096
+          && request.resource.data.updatedAt == request.time;
+        allow delete: if signedIn() && request.auth.uid == uid;
+      }
     }
   }
 }

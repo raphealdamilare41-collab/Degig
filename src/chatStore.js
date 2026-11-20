@@ -68,6 +68,33 @@ export const subscribeToConversation = (sender, recipient, onMessages, onError) 
   }, onError)
 }
 
+export const subscribeToInbox = (userId, onConversations, onError) => {
+  requireChatServices()
+  const inboxQuery = query(
+    collection(db, 'conversations'),
+    where('participants', 'array-contains', userId),
+    orderBy('lastMessageAt', 'desc'),
+  )
+
+  return onSnapshot(inboxQuery, (snapshot) => {
+    onConversations(snapshot.docs.map((conversationSnapshot) => {
+      const conversation = conversationSnapshot.data()
+      return {
+        ...conversation,
+        id: conversationSnapshot.id,
+        lastMessageAt: conversation.lastMessageAt?.toDate?.().toISOString() || '',
+      }
+    }))
+  }, onError)
+}
+
+export const markConversationRead = async (conversationId, userId) => {
+  requireChatServices()
+  await updateDoc(doc(db, 'conversations', conversationId), {
+    [`unreadCounts.${userId}`]: 0,
+  })
+}
+
 export const sendTextMessage = async (sender, recipient, text) => {
   requireChatServices()
   const messageText = text.trim()

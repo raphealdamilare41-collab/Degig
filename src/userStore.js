@@ -34,6 +34,12 @@ export const getAccountErrorMessage = (error) => {
     'storage/unauthorized': 'Firebase Storage blocked the upload. Enable Storage and deploy storage.rules.',
     'storage/quota-exceeded': 'Firebase Storage is over its current quota.',
     'storage/retry-limit-exceeded': 'The upload could not finish. Check your connection and try again.',
+    'functions/unauthenticated': 'Sign in again before using Degig AI.',
+    'functions/invalid-argument': 'Your prompt could not be sent. Check it and try again.',
+    'functions/failed-precondition': 'Degig AI is not configured correctly. Check the Gemini API key in Firebase Functions secrets.',
+    'functions/resource-exhausted': 'Degig AI is temporarily rate-limited. Wait a little and try again.',
+    'functions/unavailable': 'Degig AI is temporarily unavailable. Please try again.',
+    'functions/deadline-exceeded': 'Degig AI took too long to respond. Please try again.',
     'unavailable': 'Firebase is temporarily unavailable. Check your connection and try again.',
   }
   const code = typeof error?.code === 'string' ? error.code : ''
